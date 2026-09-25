@@ -19,7 +19,16 @@ The raw data was messier than it first looked: $0 placeholder prices, duplicate 
 
 Standalone SQL lives in `sql/schema.sql` (the two-table design) and `sql/queries.sql` (every query, commented). The notebook runs the same queries with narrative and charts.
 
-The dashboard half of phase 2 (Power BI / Tableau) has to be built by hand in that tool's desktop app — the notebook ends with the exact spec (4 visuals + 1 filter) to build there, based on what these queries found.
+The dashboard half of phase 2 is built: `dashboard/index.html` is a self-contained
+interactive page implementing the spec at the end of `02_sql_analysis.ipynb` — KPI
+tiles, average price by brand and by region, price against odometer colored by title
+status, and one title-status filter scoping all of it. Open it directly, or rebuild
+its embedded data from the database with `python dashboard/build_dashboard.py`.
+
+The original spec named Power BI, which has no macOS build (and Power BI Service
+needs a work or school account). `dashboard/TABLEAU.md` is a step-by-step guide for
+rebuilding the same four visuals in Tableau Public, the free Mac-native equivalent,
+for when a named BI tool is specifically wanted.
 
 ## Phase 3 — price-prediction model (done)
 
@@ -31,7 +40,7 @@ Both models land around R² ≈ 0.3 (explaining roughly a third of price variati
 
 ## Coming next
 
-- **Finish phase 2:** build the dashboard in Power BI or Tableau Public, following the spec at the end of `02_sql_analysis.ipynb`
+- **Optional:** rebuild the dashboard in Tableau Public following `dashboard/TABLEAU.md`, if a named BI tool is wanted alongside the interactive page
 - **Improve phase 3:** add the `region` feature (Midwest only — see 5b; the Northeast and West effects didn't hold), try gradient boosting, cross-validate instead of a single train/test split
 
 ## What's here
@@ -42,10 +51,15 @@ used-car-analysis/
 │   ├── raw/us_cars.csv              # original source data
 │   └── processed/
 │       ├── us_cars_clean.csv        # cleaned data (output of phase 1)
-│       └── used_cars.db             # SQLite database built from the cleaned data
+│       ├── used_cars.db             # SQLite database built from the cleaned data
+│       └── tableau_listings.csv     # flattened export for Tableau (region join applied)
 ├── sql/
 │   ├── schema.sql                   # table definitions
 │   └── queries.sql                  # every phase 2 query, standalone
+├── dashboard/
+│   ├── index.html                   # interactive phase 2 dashboard (data embedded)
+│   ├── build_dashboard.py           # regenerates that embedded data from used_cars.db
+│   └── TABLEAU.md                   # guide for rebuilding it in Tableau Public
 ├── notebooks/
 │   ├── 01_eda.ipynb                 # phase 1: cleaning + exploratory analysis
 │   ├── 02_sql_analysis.ipynb        # phase 2: same questions in SQL, plus JOINs/window functions
