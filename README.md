@@ -14,7 +14,7 @@ The raw data was messier than it first looked: $0 placeholder prices, duplicate 
 
 `notebooks/02_sql_analysis.ipynb` rebuilds the phase 1 questions as SQL against a real SQLite database (`data/processed/used_cars.db`) instead of pandas on a CSV, and adds two questions pandas alone made awkward:
 
-- **Does region matter?** (a JOIN against a `regions` lookup table) — yes: Midwest and Northeast listings average noticeably higher than the South.
+- **Does region matter?** (a JOIN against a `regions` lookup table) — partly. A raw average puts Midwest and Northeast above the South, but only the Midwest result survives testing: **+$4,054 over the South** after controlling for mileage, year, title status and brand, still significant with state-clustered standard errors, and unchanged when its largest state is dropped. The apparent **Northeast** premium collapses to **+$76 (p=0.92)** once Pennsylvania — 59% of that region's listings — is excluded, so it was one state's market, not a region's. Region explains only ~3.5% of price variation either way, and within-region spread is larger than the gap between regions. Section 5b of the notebook shows the checks.
 - **Do brands hold their price rank the same way across title status?** (a window function) — no: Chevrolet is mid-pack among clean titles but the cheapest major brand once salvaged.
 
 Standalone SQL lives in `sql/schema.sql` (the two-table design) and `sql/queries.sql` (every query, commented). The notebook runs the same queries with narrative and charts.
@@ -32,7 +32,7 @@ Both models land around R² ≈ 0.3 (explaining roughly a third of price variati
 ## Coming next
 
 - **Finish phase 2:** build the dashboard in Power BI or Tableau Public, following the spec at the end of `02_sql_analysis.ipynb`
-- **Improve phase 3:** add the `region` feature, try gradient boosting, cross-validate instead of a single train/test split
+- **Improve phase 3:** add the `region` feature (Midwest only — see 5b; the Northeast and West effects didn't hold), try gradient boosting, cross-validate instead of a single train/test split
 
 ## What's here
 
